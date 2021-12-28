@@ -1,0 +1,76 @@
+#include <LiquidCrystal_I2C.h>
+LiquidCrystal_I2C lcd(0x27, 16,2); // set the LCD address to 0x27 for a 16 chars and 2 line display
+ 
+#define _S1 3
+#define _S2 4
+#define _S3 5
+
+
+ 
+int count_S1 = 0;
+int count_S2 = 0;
+int count_S3 = 0;
+double total    = 0.00;
+
+ 
+int curr_state_S1 = HIGH;
+int prev_state_S1 = HIGH;
+int curr_state_S2 = HIGH;
+int prev_state_S2 = HIGH;
+int curr_state_S3 = HIGH;
+int prev_state_S3 = HIGH;
+
+ 
+void intro() {
+ lcd.setCursor(0, 0);
+ lcd.print("  COIN SORTING ");
+ lcd.setCursor(0,1);
+ lcd.print("  AND COUNTING ");
+ delay(3000);
+ lcd.clear();
+}
+ 
+void setup() {
+ lcd.init();
+ lcd.backlight();
+ intro();
+ lcd.setCursor(0, 0);
+ lcd.print("0.25 0.5 1 Total");
+}
+ 
+void loop() {
+ lcd.setCursor(2, 1);
+ lcd.print(count_S1);
+ lcd.setCursor(6, 1);
+ lcd.print(count_S2);
+ lcd.setCursor(9, 1);
+ lcd.print(count_S3);
+ lcd.setCursor(12,1);
+ lcd.print(total);
+ 
+ 
+ 
+ curr_state_S1 = digitalRead(_S1);
+ curr_state_S2 = digitalRead(_S2);
+ curr_state_S3 = digitalRead(_S3);
+
+ 
+ if (curr_state_S1 == LOW && prev_state_S1 == HIGH) {
+ count_S1++;
+ total=total+0.25;
+ }
+ if (curr_state_S2 == LOW && prev_state_S2 == HIGH) {
+ count_S2++;
+ total=total+0.5;
+ }
+ if (curr_state_S3 == LOW && prev_state_S3 == HIGH) {
+ count_S3++;
+ total=total+1.00;
+ }
+ 
+ 
+ prev_state_S1 = curr_state_S1;
+ prev_state_S2 = curr_state_S2;
+ prev_state_S3 = curr_state_S3;
+
+}
